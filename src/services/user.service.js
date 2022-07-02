@@ -16,6 +16,7 @@ const getUserById = async (id) => {
 }
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserByEmail(email)
+
 /**
  * Get user by email
  * - Fetch user object from Mongo using the "email" field and return user object
@@ -27,6 +28,7 @@ const getUserByEmail = async (email) => {
 };
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement createUser(user)
+
 /**
  * Create a user
  *  - check if the user with the email already exists using `User.isEmailTaken()` method
@@ -61,3 +63,5 @@ module.exports = {
   getUserByEmail,
   createUser,
 };
+
+
