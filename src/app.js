@@ -28,7 +28,8 @@ app.use(cors());
 app.options("*", cors());
 
 // TODO: CRIO_TASK_MODULE_AUTH - Initialize passport and add "jwt" authentication strategy
-
+app.use(passport.initialize());
+passport.use("jwt", jwtStrategy);
 // Reroute all API request starting with "/v1" route
 app.use("/v1", routes);
 

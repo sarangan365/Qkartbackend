@@ -3,11 +3,13 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { userService } = require("../services");
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUser() function
+// TODO: CRIO_TASK_MODULE_CART - Update function to process url with query params
 /**
  * Get user details
  *  - Use service layer to get User data
  * 
+ *  - If query param, "q" equals "address", return only the address field of the user
+ *  - Else,
  *  - Return the whole user object fetched from Mongo
 
  *  - If data exists for the provided "userId", return 200 status code and the object
@@ -33,6 +35,12 @@ const { userService } = require("../services");
  *     "__v": 0
  * }
  * 
+ * Request url - <workspace-ip>:8082/v1/users/6010008e6c3477697e8eaba3?q=address
+ * Response - 
+ * {
+ *   "address": "ADDRESS_NOT_SET"
+ * }
+ * 
  *
  * Example response status codes:
  * HTTP 200 - If request successfully completes
@@ -42,22 +50,49 @@ const { userService } = require("../services");
  * @returns {User | {address: String}}
  *
  */
+
 const getUser = catchAsync(async (req, res) => {
   let data;
-  if (req.query.q === "") {
-    data = await userService.getUserById(req.params.userId);
+  if (req.query.q === "address") {
+    data = await userService.getUserAddressById(req.params.userId);
   } else {
     data = await userService.getUserById(req.params.userId);
   }
+
   if (!data) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-   else {
+
+  if (data.email != req.user.email) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "User not authorized to access this resource"
+    );
+  }
+
+  if (req.query.q === "address") {
+    res.send({
+      address: data.address,
+    });
+  } else {
     res.send(data);
   }
-  
 });
+
+const createUser = catchAsync(async (req, res) => {
+  try {
+    const body = req.body;
+    const newUser = await userService.createUser(body);
+    console.log("New user created", newUser);
+    res.status(200).json(newUser);
+  } catch (error) {
+    throw new ApiError(200, "Email already created");
+  }
+});
+
+
 
 module.exports = {
   getUser,
+  createUser,
 };
