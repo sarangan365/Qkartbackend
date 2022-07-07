@@ -130,6 +130,7 @@ const addProductToCart = async (user, productId, quantity) => {
  * @throws {ApiError}
  */
 const updateProductInCart = async (user, productId, quantity) => {
+  let cart = await Cart.findOne({ email: user.email });
   if (cart == null) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
@@ -188,7 +189,7 @@ const deleteProductFromCart = async (user, productId) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "User does not have a cart");
   }
 
-    let productIndex = -1;
+  let productIndex = -1;
   for (let i = 0; i < cart.cartItems.length; i++) {
     if (productId == cart.cartItems[i].product._id) {
       productIndex = i;
