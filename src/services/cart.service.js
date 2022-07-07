@@ -130,8 +130,6 @@ const addProductToCart = async (user, productId, quantity) => {
  * @throws {ApiError}
  */
 const updateProductInCart = async (user, productId, quantity) => {
-  // CRIO_SOLUTION_START_MODULE_CART
-  let cart = await Cart.findOne({ email: user.email });
   if (cart == null) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
@@ -185,21 +183,18 @@ const updateProductInCart = async (user, productId, quantity) => {
  * @throws {ApiError}
  */
 const deleteProductFromCart = async (user, productId) => {
-  // CRIO_SOLUTION_START_MODULE_CART
   let cart = await Cart.findOne({ email: user.email });
   if (cart == null) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User does not have a cart");
   }
 
-  // Find the index of the cart item matching the input productId
-  let productIndex = -1;
+    let productIndex = -1;
   for (let i = 0; i < cart.cartItems.length; i++) {
     if (productId == cart.cartItems[i].product._id) {
       productIndex = i;
     }
   }
 
-  // If product not in cart, throw error. Otherwise, delete from cart.
   if (productIndex == -1) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Product not in cart. ");
   } else {
