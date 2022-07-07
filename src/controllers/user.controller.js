@@ -1,7 +1,8 @@
+
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
-const { userService } = require("../services");
+const {userService}  = require("../services");
 
 // TODO: CRIO_TASK_MODULE_CART - Update function to process url with query params
 /**
@@ -77,22 +78,44 @@ const getUser = catchAsync(async (req, res) => {
   } else {
     res.send(data);
   }
+
 });
 
 const createUser = catchAsync(async (req, res) => {
-  try {
-    const body = req.body;
+  try{
+    const body = req.body; 
     const newUser = await userService.createUser(body);
-    console.log("New user created", newUser);
+    console.log("New user created",newUser)
     res.status(200).json(newUser);
-  } catch (error) {
+  }
+  catch(error){
     throw new ApiError(200, "Email already created");
   }
 });
 
+const setAddress = catchAsync(async (req, res) => {
+  const user = await userService.getUserById(req.params.userId);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (user.email != req.user.email) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "User not authorized to access this resource"
+    );
+  }
+
+  const address = await userService.setAddress(user, req.body.address);
+
+  res.send({
+    address: address,
+  });
+});
 
 
 module.exports = {
   getUser,
   createUser,
+  setAddress
 };

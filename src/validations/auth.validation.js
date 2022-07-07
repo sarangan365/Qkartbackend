@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { password, email } = require("./custom.validation");
+const { password,email } = require("./custom.validation");
 
 // Define request validation schema for user registration
 /**
@@ -10,9 +10,9 @@ const { password, email } = require("./custom.validation");
  */
 const register = {
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    name: Joi.string().required(),
-    password: Joi.string().required().custom(password),
+    email : Joi.string().required().email(),
+    name : Joi.string().required(),
+    password : Joi.string().required().custom(password)
   }),
 };
 
@@ -23,8 +23,8 @@ const register = {
  */
 const login = {
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
+    email : Joi.string().required().email(),
+    password : Joi.string().required().custom(password)
   }),
 };
 

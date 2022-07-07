@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 // NOTE - "validator" external library and not the custom middleware at src/middlewares/validate.js
 const validator = require("validator");
 const config = require("../config/config");
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
 // A Mongoose schema for "users" collection
 const userSchema = mongoose.Schema(
@@ -13,22 +13,22 @@ const userSchema = mongoose.Schema(
       trim: true,
     },
     email: {
-      type: String,
+      type : String,
       required: true,
-      trim: true,
-      unique: true,
-      lowercase: true,
+      trim : true,
+      unique : true,
+      lowercase : true,
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error("Invalid email");
         }
-      },
+      }
     },
     password: {
       type: String,
-      required: true,
-      trim: true,
-      minlength: 8,
+      required : true,
+      trim : true,
+      minlength : 8,
       validate(value) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
           throw new Error(
@@ -38,15 +38,15 @@ const userSchema = mongoose.Schema(
       },
     },
     walletMoney: {
-      type: Number,
-      required: true,
-      default: config.default_wallet_money,
+      type : Number,
+      required : true,
+      default : config.default_wallet_money
     },
     address: {
       type: String,
-      required: false,
-      trim: false,
-      default: config.default_address,
+      required : false,
+      trim : false,
+      default: config.default_address
     },
   },
   // Create createdAt and updatedAt fields automatically
@@ -61,8 +61,8 @@ const userSchema = mongoose.Schema(
  * @returns {Promise<boolean>}
  */
 userSchema.statics.isEmailTaken = async function (email) {
-  const user = await this.findOne({ email: email });
-  return !!user;
+  const user = await this.findOne({ "email": email });
+  return !!user
 };
 
 /**
@@ -71,7 +71,7 @@ userSchema.statics.isEmailTaken = async function (email) {
  * @returns {Promise<boolean>}
  */
 userSchema.methods.isPasswordMatch = async function (password) {
-  return bcrypt.compare(password, this.password);
+  return bcrypt.compare(password,this.password)
 };
 
 /**
@@ -86,8 +86,10 @@ userSchema.methods.hasSetNonDefaultAddress = async function () {
   return user.address !== config.default_address;
 };
 
+
 /**
  * @typedef User
  */
 const User = mongoose.model("User", userSchema);
 module.exports.User = User;
+
