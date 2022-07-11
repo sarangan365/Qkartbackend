@@ -38,10 +38,17 @@ describe("Cart test", () => {
        *  "stack": "<Error-stack-trace-if-present>"
        * }
        */
-       expect(true).toEqual(false);
+      await expect(res).rejects.toThrow(ApiError);
+      await expect(res).rejects.toEqual(
+        expect.objectContaining({
+          statusCode: httpStatus.NOT_FOUND,
+        })
+      );
+       
     });
 
     it("should throw 400 error if user's cart doesn't have any product", async () => {
+
       // Mock Cart model to return `emptyCart` object as output to `Cart.findOne()` call
       mockingoose(Cart).toReturn(emptyCart, "findOne");
 
@@ -50,6 +57,12 @@ describe("Cart test", () => {
       // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
+      await expect(res).rejects.toThrow(ApiError);
+      await expect(res).rejects.toEqual(
+        expect.objectContaining({
+          statusCode: httpStatus.BAD_REQUEST,
+        })
+      );
     });
 
     it("should throw 400 error if address is not set - when User.hasSetNonDefaultAddress() returns false", async () => {
@@ -67,6 +80,12 @@ describe("Cart test", () => {
       // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
+      await expect(res).rejects.toThrow(ApiError);
+      await expect(res).rejects.toEqual(
+        expect.objectContaining({
+          statusCode: httpStatus.BAD_REQUEST,
+        })
+      );
     });
 
     it("should throw 400 error if wallet balance is insufficient", async () => {
@@ -85,6 +104,12 @@ describe("Cart test", () => {
       // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
+      await expect(res).rejects.toThrow(ApiError);
+      await expect(res).rejects.toEqual(
+        expect.objectContaining({
+          statusCode: httpStatus.BAD_REQUEST,
+        })
+      );
     });
 
     it("should update user balance and empty the cart on success", async () => {
@@ -117,7 +142,7 @@ describe("Cart test", () => {
       expect(hasSetNonDefaultAddressMock.mock.calls.length).not.toBe(0);
 
       // TODO: CRIO_TASK_MODULE_TEST - Assert that the wallet balance of user was reduced
-       expect(true).toEqual(false);
+      expect(userOneFinal.walletMoney).toBeLessThan(userOne.walletMoney);
     });
   });
 });
